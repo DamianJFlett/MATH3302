@@ -1,9 +1,14 @@
 #affine cipher
 #first attempt -frequency analysis
 from collections import defaultdict
-import cipher_tools
+from cipher_tools import Affine_Cipher,  Solver
 ciphertext = "OGHYLXEEQOGWNYJYGHYNKESOETHFYOGLOGHYLXEEPLEIQWYHEXEDYKESJELYDYLIELY"
+#context - affine. find a, b
 
+#First, try brute force.
+s = Solver("Affine")
+s.brute_force(ciphertext, decrypt = True)
+#a=11, b=6 produces an intelligible message
 counts = defaultdict(int)
 for c in ciphertext:
     counts[c]+=1
@@ -21,6 +26,7 @@ print(counts_sorted)
 
 #pow(x, y, p) returns x^y mod p!
 
+#denote |x| = z's imagine in z_26 under {(0, a), ....}
 #a|e|+b=|E|
 #a|t|+b=|Y|
 
