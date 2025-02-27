@@ -1,12 +1,12 @@
 #affine cipher
 #first attempt -frequency analysis
 from collections import defaultdict
-from cipher_tools import Affine_Cipher,  Solver
+from cipher_tools import Affine_Cipher,  Affine_Solver
 ciphertext = "OGHYLXEEQOGWNYJYGHYNKESOETHFYOGLOGHYLXEEPLEIQWYHEXEDYKESJELYDYLIELY"
 #context - affine. find a, b
 
 #First, try brute force.
-s = Solver("Affine")
+s = Affine_Solver()
 s.brute_force(ciphertext, decrypt = True)
 #a=11, b=6 produces an intelligible message
 counts = defaultdict(int)
