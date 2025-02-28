@@ -8,7 +8,7 @@ ciphertext = "OGHYLXEEQOGWNYJYGHYNKESOETHFYOGLOGHYLXEEPLEIQWYHEXEDYKESJELYDYLIEL
 #First, try brute force.
 s = Affine_Solver()
 s.brute_force(ciphertext, decrypt = True)
-#a=11, b=6 produces an intelligible message
+#a=11, b=6 produces an intelligible message, after seeing the consolve 
 counts = defaultdict(int)
 for c in ciphertext:
     counts[c]+=1
@@ -32,5 +32,13 @@ print(counts_sorted)
 
 #therefore, a(|e|-|t|) = |E|-|Y|
 #a = (|E|-|Y|)(|e|-|t|)^{-1}
-
-print("a in first case would be ")
+#
+print(s.solve_affine([("e", "E"), ("t", "Y")]))
+print(s.solve_affine([("t", "E"), ("e", "Y")]))
+#both solutions here are nonviable as a is not coprime with 26. In addition, they dont agree with the brute force answer.
+#doing some whitebox-ish testing, the most common letter in the plaintext string is actually o, the fourth most common letter in the english langugage.
+#This is why frequency analysis is not perfect: we would have had to try quite a few more combinations of most common ciphertext letters before we got to o, 
+#so in this case it might have been more demonstrative to use frequency analysis ot just determine in what order to brute force, if operations were more complex.
+#TODO - check if this is more computationally efficient in any way. (this might be useful in mixed-alpha)
+#  For the sake of demonstrating the solver though:
+print(s.solve_affine([("o", "E"), ("e", "Y")]))

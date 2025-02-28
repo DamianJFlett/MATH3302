@@ -4,17 +4,17 @@ import math
 LATIN_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 class Cipher():
     def __init__(self, alphabet:str = LATIN_ALPHABET):
+        self._alphabet_size = len(alphabet)
         self._numerise = {}
         self._letterise = {}
         self._alphabet = alphabet
         #generate a mapping from z_n to the alphabet and vice versa
         i = 0
         for c in alphabet:
-            self._letterise[i] = c.lower()
-            self._numerise[c.upper()] = i
-            self._numerise[c.lower()] = i
+            self._letterise[i % self._alphabet_size] = c.lower()
+            self._numerise[c.upper()] = i % self._alphabet_size
+            self._numerise[c.lower()] = i % self._alphabet_size
             i += 1
-        self._alphabet_size = len(alphabet)
     def encrypt(self, message:str) -> str:
         """
         Encrypts the given message using the cipher. If a letter not in the alphabet is used, it will remain where it was, unencrypted.
@@ -97,15 +97,27 @@ class Solver(Cipher):
 
 
 class Affine_Solver(Solver):
+    def __init__(self, alphabet = LATIN_ALPHABET):
+        super().__init__(alphabet)
+
     def solve(self, pairs:list[tuple]) -> list[int]:
         """
         takes pairs (plaintext, ciphertext) and tries to find the parameters 
         """
         return self.solve_affine(pairs)
     
-    def solve_affine(self, pairs:list[tuple]) -> list[int]:
+    def solve_affine(self, pairs:list[tuple]) -> tuple[int, int]:
+        """
+        takes a list of the form [(plaintext1, ciphertext1), (plaintext2, ciphertext2)] and attempts to find the key of the cipher, assuming the pairs are encoded
+        with an affine cipher. 
+        """
         p1, c1 = pairs[0]
-        p2, c2 = pairs[1]
+        p2, c2 = pairs[1] 
+        #the error here is that even though an inverse doesn't exist sometimes, there can still be a solution to the equation
+        a = (self._numerise[c1]-self._numerise[c2])*pow((self._numerise[p1]-self._numerise[p2]), -1, self._alphabet_size)
+        b = self._numerise[c1]-a*self._numerise[p1]
+        return (a % self._alphabet_size, b % self._alphabet_size)
+
 
     def brute_force(self, message:str, decrypt = False):
         """
