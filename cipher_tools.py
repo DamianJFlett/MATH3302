@@ -1,5 +1,7 @@
 from collections import defaultdict
 import math
+from itertools import permutations
+import numpy as np
 
 LATIN_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 class Cipher():
@@ -84,11 +86,35 @@ class Caesar_Cipher(Cipher):
                 decrypted += c
         return decrypted.lower()
     
+class MixedAlphabetCipher(Cipher):
+    def __init__(self, alphabet:str = LATIN_ALPHABET):
+        super().__init__()
+    def solve(self):
+        pass #TODO: need some way to pass permutations as input for an arbitrary list ideally, and then parse those
+
+class HillCipher(Cipher):
+    def __init__(self, key: list[list[int]], alphabet: str = LATIN_ALPHABET):
+        super().__init__()
+        if any(len(key) == len(key[n]) for n in range(len(key))):
+            raise ValueError("Provided key was not square!")
+        #check if the matrix is invertible
+        if np.linalg.matrix_rank(key) != len(key):
+            raise ValueError("Provided key was singular!")
+        self._key = key
+        self._block_size = len(key)
+    def encrypt(self, message:str, add_padding = False):
+        if len(message) % self._block_size != 0:
+            if not add_padding:
+               raise ValueError("Provided message is not in the right size")
+            else:
+                message += self._alphabet[0] * len(message) % self._block_size
+        
+
 class Solver(Cipher):
     """
     Mostly abstract class for Solving ciphers, usually meaning to get their key given some cipher/plaintext pairs
     """
-    def __init__(self, alphabet: str = LATIN_ALPHABET):
+    def __init__(self, permutation, alphabet: str = LATIN_ALPHABET):
         super().__init__(alphabet)
     def solve(self):
         pass
