@@ -1,6 +1,12 @@
 import cipher_tools as ct
 import unittest
 class Test(unittest.TestCase):
+    def test_cipher(self):
+        c = ct.Cipher()
+        s = "QASDKJHAFKJHASDAOSDJ"
+        self.assertAlmostEqual(sum(list(c.freqs(s, print = True).values())), 2)
+        self.assertAlmostEqual(c.freqs(s)['O'], 1/20)
+
     def test_affine(self):
         unenc = "hi"
         enc = "BI"
@@ -18,9 +24,10 @@ class Test(unittest.TestCase):
     def test_hill(self):
         self.assertRaises(ValueError, ct.HillCipher.__init__, (ct.HillCipher(),[[1,3,3],[1,5,6],[5,6,4,7]]))
         self.assertRaises(ValueError, ct.HillCipher.__init__, (ct.HillCipher(),[[1,0,0],[0,0,0],[0,0,0]]))
-
+    
 
 test = Test()
-test.test_affine()
-test.test_caesar()
-test.test_hill()
+test.test_cipher()
+# test.test_affine()
+# test.test_caesar()
+# test.test_hill()

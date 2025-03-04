@@ -27,7 +27,20 @@ class Cipher():
         Decrypts the given message using the cipher. If a letter not in the alphabet is used, it will remain where it was, undecrypted.
         """
         pass
-
+    def freqs(self, message:str, print = False) -> str:
+        """
+        Prints out frequences of each letter in the given message, and compares it to frequencies in the english language. Does not support 
+        non-english languages or alphabets other than the 26 letters of the latin alphabet. 
+        """
+        l = len(message)
+        #lol
+        upper = {c.upper(): (message.count(c.lower())+message.count(c.upper()))/l for c in LATIN_ALPHABET}
+        lower = {c.lower(): (message.count(c.lower())+message.count(c.upper()))/l for c in LATIN_ALPHABET}
+        freqs = dict(upper, **lower)
+        if print:
+            pass
+        return freqs
+        
 #TODO (Maybe): subcategorise ciphers - some, each letter will go to exactly one other letter under the en/decryption mapping, those can be refactored into one superclass 
 #which always checks for nonalphabet characters, thus reducing some repitition
 class Affine_Cipher(Cipher):
@@ -85,12 +98,6 @@ class Caesar_Cipher(Cipher):
             else:
                 decrypted += c
         return decrypted.lower()
-    
-    def brute_force(self, message: str, decrypt = False) -> str:
-            for s in range(self._alphabet_size):
-                cipher = Caesar_Cipher(s)
-                plaintext = cipher.decrypt(message)
-                print(f"For s = {s}, plaintext is {plaintext}")
 
 class MixedAlphabetCipher(Cipher):
     def __init__(self, alphabet:str = LATIN_ALPHABET):
@@ -123,8 +130,14 @@ class Solver(Cipher):
     def __init__(self, permutation, alphabet: str = LATIN_ALPHABET):
         super().__init__(alphabet)
     def solve(self):
+        """
+        Somehow analytically solves the cipher for its key, given some info. 
+        """
         pass
     def brute_force(self):
+        """
+        Prints out all possible en/decryptions of the given message
+        """
         pass
 
 
@@ -151,7 +164,7 @@ class Affine_Solver(Solver):
         return (a % self._alphabet_size, b % self._alphabet_size)
 
 
-    def brute_force(self, message:str, decrypt = False):
+    def brute_force(self, message:str, decrypt = True):
         """
         Prints out all possible affine cipher decryptions (decrypt=True) or encryptions (decrypt=False) of the given ciphertext
         """
@@ -163,3 +176,19 @@ class Affine_Solver(Solver):
                         cipher = Affine_Cipher(a, b)
                         plaintext = cipher.decrypt(message)
                         print(f"For a={a}, b={b}, plaintext is {plaintext}")
+
+class Caesar_Solver(Solver):
+    def __init__(self, alphabet = LATIN_ALPHABET, decrypt = True):
+        super().__init__()
+
+    def brute_force(self, message: str, decrypt = False) -> str:
+        if decrypt:
+            for s in range(self._alphabet_size):
+                cipher = Caesar_Cipher(s)
+                plaintext = cipher.decrypt(message)
+                print(f"For a shift of {s}, plaintext is {plaintext}")
+        else:
+            for s in range(self._alphabet_size):
+                cipher = Caesar_Cipher(s)
+                ciphertext = cipher.encrypt(message)
+                print(f"For a shift of {s}, your message is encrypted as {ciphertext}")
