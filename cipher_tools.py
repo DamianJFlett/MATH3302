@@ -86,6 +86,12 @@ class Caesar_Cipher(Cipher):
                 decrypted += c
         return decrypted.lower()
     
+    def brute_force(self, message: str, decrypt = False) -> str:
+            for s in range(self._alphabet_size):
+                cipher = Caesar_Cipher(s)
+                plaintext = cipher.decrypt(message)
+                print(f"For s = {s}, plaintext is {plaintext}")
+
 class MixedAlphabetCipher(Cipher):
     def __init__(self, alphabet:str = LATIN_ALPHABET):
         super().__init__()

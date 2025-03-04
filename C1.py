@@ -1,11 +1,15 @@
 #affine cipher
 #first attempt -frequency analysis
 from collections import defaultdict
-from cipher_tools import Affine_Cipher,  Affine_Solver
+from cipher_tools import Affine_Cipher,  Affine_Solver,Caesar_Cipher
 ciphertext = "OGHYLXEEQOGWNYJYGHYNKESOETHFYOGLOGHYLXEEPLEIQWYHEXEDYKESJELYDYLIELY"
 #context - affine. find a, b
 
 #First, try brute force.
+
+s1 = "FJNZCJNYYNOL"
+s = Caesar_Cipher(3)
+s.brute_force(s1, 1)
 s = Affine_Solver()
 s.brute_force(ciphertext, decrypt = True)
 #a=11, b=6 produces an intelligible message, after seeing the consolve 
